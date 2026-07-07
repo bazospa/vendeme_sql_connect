@@ -1,0 +1,31 @@
+# Incidencias reportadas en terreno durante eventos (equipo del local via
+# vendeme_client_flutter; el admin las revisa en /incidents).
+#
+# OJO cutover: la app cliente HOY escribe directo a Firestore
+# (incident_dialog.dart → collection('incidents')). El corte de este dominio va
+# JUNTO con un release de la app cliente que escriba aquí — hasta entonces el
+# admin sigue leyendo Firestore (si no, los reportes nuevos quedarían invisibles).
+
+enum IncidenceSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+type Incidence @table(key: "id") {
+  id: String! @col(dataType: "varchar(100)")
+  # Ids de Firestore (String): events/terminalsEvent siguen en el espejo, no
+  # hay FK cruzada entre databases.
+  eventId: String @col(dataType: "varchar(100)") @index
+  terminalEventId: String @col(dataType: "varchar(100)")
+  detail: String
+  # Firestore guarda "info"/"warning"/"critical" en minúscula: el import y los
+  # modelos Dart mapean al enum.
+  severity: IncidenceSeverity! @default(value: INFO)
+  # Fecha del reporte (la trae el cliente; createdAt es la de inserción).
+  date: Timestamp! @index
+  # Lista JSON de URLs de imágenes (CDN); null = sin imágenes. Mismo patrón
+  # que los campos-lista del garage (prefixes): JSON en String.
+  images: String
+  createdAt: Timestamp! @default(expr: "request.time")
+}

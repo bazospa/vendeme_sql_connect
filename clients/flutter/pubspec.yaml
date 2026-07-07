@@ -1,0 +1,19 @@
+name: vendeme_sqlconnect
+description: >-
+  SDK Flutter generado de Firebase SQL Connect (conector `default`, servicio
+  vendeme-sqlconnect). Las apps lo consumen como dependencia git.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # El SDK generado depende del plugin de SQL Connect; se hereda a las apps.
+  firebase_data_connect: any
+
+dev_dependencies:
+  flutter_lints: ^6.0.0

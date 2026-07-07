@@ -1,0 +1,50 @@
+# Colación — mutations solo staff. Los tickets son APPEND-ONLY (ledger
+# inmutable): existe insert, no update ni delete.
+
+# Guarda la configuración (upsert de la fila única "colacion").
+mutation SaveColacionSettings(
+  $ticketPrice: Int!
+  $companyName: String!
+  $companyRut: String
+  $companyPhone: String
+  $companyEmail: String
+) @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  colacionSetting_upsert(
+    data: {
+      id: "colacion"
+      ticketPrice: $ticketPrice
+      companyName: $companyName
+      companyRut: $companyRut
+      companyPhone: $companyPhone
+      companyEmail: $companyEmail
+      updatedAt_expr: "request.time"
+    }
+  )
+}
+
+# Persiste un ticket YA impreso. El id viene del cliente (se reserva antes de
+# imprimir para que el QR lo incluya); insert estricto — si el id ya existe es
+# un doble-click y debe fallar, no sobreescribir.
+mutation AddColacionTicket(
+  $id: String!
+  $type: String! = "colacion"
+  $date: Timestamp!
+  $month: String!
+  $employeeId: String!
+  $employeeName: String!
+  $employeeRut: String
+  $ticketPrice: Int!
+) @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  colacionTicket_insert(
+    data: {
+      id: $id
+      type: $type
+      date: $date
+      month: $month
+      employeeId: $employeeId
+      employeeName: $employeeName
+      employeeRut: $employeeRut
+      ticketPrice: $ticketPrice
+    }
+  )
+}

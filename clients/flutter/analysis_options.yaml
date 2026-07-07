@@ -1,0 +1,6 @@
+# lib/src es código GENERADO por SQL Connect (no se edita a mano): se excluye
+# del análisis para que sus warnings (ej. duplicate_import del generador) no
+# ensucien el CI de las apps consumidoras.
+analyzer:
+  exclude:
+    - lib/src/**

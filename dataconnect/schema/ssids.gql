@@ -1,0 +1,17 @@
+# Redes WiFi conocidas de los locales. Los terminales/impresoras se autoconectan
+# a estas redes via un plugin que las obtiene por la Cloud Function getSSIDs
+# (vendeme-functions-ssids, Bearer SSID_FUNCTION_TOKEN). El admin las administra
+# desde el nav /ssids.
+#
+# Llave String (no UUID): preserva los doc ids de Firestore en el import y los
+# nuevos se crean con un UUID v4 generado en el cliente — mismo contrato que el
+# resto de dominios migrados (espejo fiel).
+type Ssid @table(key: "id") @unique(fields: ["ssid"]) {
+  id: String! @col(dataType: "varchar(100)")
+  # Único a nivel BD (antes la unicidad era un check read-then-write en el
+  # cliente): un insert/update duplicado falla y la UI muestra el error.
+  ssid: String! @col(dataType: "varchar(64)")
+  password: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}

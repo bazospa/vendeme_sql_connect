@@ -1,0 +1,34 @@
+# Incidencias — el reporte lo crea el equipo del LOCAL desde
+# vendeme_client_flutter (usuarios de cliente, sin claim de staff): level USER
+# basta para insertar. La lectura sigue siendo solo staff (queries.gql).
+#
+# OJO: esta mutation la adopta la app cliente en su próximo release (hoy
+# escribe a Firestore); ver nota de cutover en schema/incidents.gql.
+
+mutation AddIncidence(
+  $id: String!
+  $eventId: String
+  $terminalEventId: String
+  $detail: String
+  $severity: IncidenceSeverity! = INFO
+  $date: Timestamp!
+  $images: String
+) @auth(level: USER) {
+  incidence_insert(
+    data: {
+      id: $id
+      eventId: $eventId
+      terminalEventId: $terminalEventId
+      detail: $detail
+      severity: $severity
+      date: $date
+      images: $images
+    }
+  )
+}
+
+# Limpieza de reportes erróneos — solo staff.
+mutation DeleteIncidence($id: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  incidence_delete(key: { id: $id })
+}

@@ -1,0 +1,8 @@
+connectorId: "default"
+generate:
+  dartSdk:
+    # Se emite dentro del package Dart de ESTE repo (clients/flutter), que las
+    # apps consumen como dependencia git. Ruta relativa a dataconnect/default/.
+    # NO editar lib/src a mano: se regenera con `firebase dataconnect:sdk:generate`.
+    outputDir: "../../clients/flutter/lib/src"
+    package: "vendeme_sqlconnect"

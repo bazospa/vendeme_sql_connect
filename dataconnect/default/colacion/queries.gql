@@ -1,0 +1,33 @@
+# Colación — dominio interno del equipo: solo staff (bazo/empleado).
+
+# Configuración (fila única "colacion"). Puede no existir aún: la UI usa
+# defaults si viene null.
+query GetColacionSettings @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  colacionSetting(key: { id: "colacion" }) {
+    ticketPrice
+    companyName
+    companyRut
+    companyPhone
+    companyEmail
+  }
+}
+
+# Tickets de un mes ("MM-YYYY") — la vista de historial/métricas mensuales.
+# limit explícito: sin él Data Connect trunca a 100 en silencio.
+query ListColacionTicketsByMonth($month: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  colacionTickets(
+    where: { month: { eq: $month } }
+    orderBy: [{ date: DESC }]
+    limit: 2000
+  ) {
+    id
+    type
+    date
+    month
+    employeeId
+    employeeName
+    employeeRut
+    ticketPrice
+  }
+}

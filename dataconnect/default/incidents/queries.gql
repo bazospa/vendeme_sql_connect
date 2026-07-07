@@ -1,0 +1,45 @@
+# Incidencias — lectura solo staff (las revisa el equipo Vendeme en el admin).
+
+# Últimas incidencias (lista principal del nav /incidents).
+query ListIncidences @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  incidences(orderBy: [{ date: DESC }], limit: 500) {
+    id
+    eventId
+    terminalEventId
+    detail
+    severity
+    date
+    images
+  }
+}
+
+# Incidencias de un evento (detalle del evento / filtro).
+query ListIncidencesByEvent($eventId: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  incidences(
+    where: { eventId: { eq: $eventId } }
+    orderBy: [{ date: DESC }]
+    limit: 500
+  ) {
+    id
+    eventId
+    terminalEventId
+    detail
+    severity
+    date
+    images
+  }
+}
+
+query GetIncidence($id: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  incidence(key: { id: $id }) {
+    id
+    eventId
+    terminalEventId
+    detail
+    severity
+    date
+    images
+  }
+}

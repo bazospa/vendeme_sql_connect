@@ -1,0 +1,20 @@
+# Redes WiFi — lectura SOLO staff (bazo o empleado con claim roles.employee,
+# el mismo claim que estampa vendeme-service-permissions al dar permisos IAM).
+# Contienen contraseñas: nunca abrir a usuarios de clientes.
+
+query ListSsids @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  ssids(orderBy: [{ ssid: ASC }], limit: 500) {
+    id
+    ssid
+    password
+    updatedAt
+  }
+}
+
+# Chequeo de unicidad para la UX del formulario (el índice único de la BD es
+# la garantía real; esto solo permite un mensaje amable antes de guardar).
+query SsidBySsid($ssid: String!) @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  ssids(where: { ssid: { eq: $ssid } }, limit: 1) {
+    id
+  }
+}

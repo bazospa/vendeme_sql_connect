@@ -1,0 +1,19 @@
+# Logs
+*.log
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Firebase cache
+.firebase/
+
+# Data Connect generated/emulator files
+.dataconnect
+
+# Flutter package build artifacts (clients/flutter)
+.dart_tool/
+.flutter-plugins-dependencies
+clients/flutter/pubspec.lock
+
+# Node
+node_modules/
+.env

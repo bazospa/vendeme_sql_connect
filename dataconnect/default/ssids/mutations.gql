@@ -1,0 +1,14 @@
+# Mutations de redes WiFi — solo staff (mismo expr que las queries).
+# Upsert cubre crear y editar: el id lo genera el cliente (UUID v4) al crear.
+
+mutation UpsertSsid($id: String!, $ssid: String!, $password: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  ssid_upsert(
+    data: { id: $id, ssid: $ssid, password: $password, updatedAt_expr: "request.time" }
+  )
+}
+
+mutation DeleteSsid($id: String!)
+  @auth(expr: "auth.token.roles.bazo == true || auth.token.roles.employee == true") {
+  ssid_delete(key: { id: $id })
+}

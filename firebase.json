@@ -1,0 +1,16 @@
+{
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    },
+    "ui": {
+      "enabled": true
+    }
+  },
+  "dataconnect": {
+    "source": "dataconnect"
+  }
+}

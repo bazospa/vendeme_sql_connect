@@ -1,0 +1,39 @@
+# Colación interna de Vendeme: configuración del ticket (fila única) + tickets
+# emitidos. Es un dominio 100% del equipo (admin-only): el emisor siempre es
+# Vendeme y los tickets se imprimen desde el admin (colacion_escpos).
+
+# Configuración (antes doc único Firestore `settings/colacion`). Fila única con
+# id fijo "colacion"; las queries/mutations usan ese literal.
+type ColacionSetting @table(key: "id") {
+  id: String! @col(dataType: "varchar(30)")
+  # Precio fijo del ticket en CLP.
+  ticketPrice: Int! @default(value: 0)
+  # Datos del emisor impresos en el encabezado.
+  companyName: String! @default(value: "Vendeme")
+  companyRut: String @col(dataType: "varchar(20)")
+  companyPhone: String @col(dataType: "varchar(30)")
+  companyEmail: String @col(dataType: "varchar(120)")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+# Ticket de colación emitido. APPEND-ONLY: registros financieros inmutables
+# (principio del ledger, DECISIONS.md) — no hay mutation de update ni delete.
+# Se persiste SOLO cuando la impresión fue exitosa (sin tickets fantasma en las
+# métricas); por eso el id se genera en el cliente ANTES de imprimir (el QR del
+# ticket lo incluye).
+type ColacionTicket @table(key: "id") {
+  id: String! @col(dataType: "varchar(100)")
+  # Extensible a futuro (`gasto`); hoy siempre "colacion".
+  type: String! @col(dataType: "varchar(30)") @default(value: "colacion")
+  date: Timestamp!
+  # "MM-YYYY" — llave de las métricas mensuales (igualdad simple, con índice).
+  month: String! @col(dataType: "varchar(7)") @index
+  # uid de Firebase Auth del empleado + snapshot de nombre/RUT al emitir
+  # (si el empleado cambia de nombre, el ticket histórico no cambia).
+  employeeId: String! @col(dataType: "varchar(100)") @index
+  employeeName: String!
+  employeeRut: String @col(dataType: "varchar(20)")
+  # Precio en CLP al momento de emitir (snapshot de ColacionSetting.ticketPrice).
+  ticketPrice: Int!
+  createdAt: Timestamp! @default(expr: "request.time")
+}

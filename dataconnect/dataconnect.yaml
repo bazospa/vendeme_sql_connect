@@ -1,0 +1,16 @@
+specVersion: "v1"
+serviceId: "vendeme-sqlconnect"
+location: "us-central1"
+schemas:
+  - source: "./schema"
+    datasource:
+      postgresql:
+        # BD PROPIA en la instancia existente (la del espejo Firestore→PG vive
+        # en otra database de la misma instancia). STRICT es seguro porque la
+        # validación es POR DATABASE y esta la gestiona 100% Data Connect —
+        # el espejo (vendeme_db) no se toca.
+        database: "vendeme-sqlconnect"
+        cloudSql:
+          instanceId: "vendeme-app"
+          schemaValidation: "STRICT"
+connectorDirs: ["./default"]
